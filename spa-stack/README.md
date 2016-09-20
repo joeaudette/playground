@@ -2,6 +2,11 @@
 
 This is just a little proof of concept to help me learn F# and polymer js
 
+I know all the buzz these days is about reactjs, angularjs, and aurelia, but myself I am more drawn towards web components and polymer with vanillajs. Web components are emerging web browser standards and therefore part of the web platform. It seems more future proof to learn and build things with web standards technology than to use the trendy js framework of the month or year.
+
+So my front end stack is web components and my back end stack is ASP.NET Core with C# and F#
+I'm just starting to learn F# and functional programming but I am very interested in it and want to try to use it as much as possible.
+
 Currently there is a basic polymer starter kit ui with a ToDo list compponent that talks to a web api written in C#.
 I'm in the process of translating the C# ToDoController into F# but not finished yet
 
