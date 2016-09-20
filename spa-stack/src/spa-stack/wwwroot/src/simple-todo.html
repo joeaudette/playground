@@ -1,0 +1,189 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <!--Paper Elements-->
+    <link rel="import" href="/bower_components/paper-input/all-imports.html" />
+    <link rel="import" href="/bower_components/paper-checkbox/paper-checkbox.html" />
+    <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html" />
+    <link rel="import" href="/bower_components/paper-item/all-imports.html" />
+    <link rel="import" href="/bower_components/iron-icons/iron-icons.html" />
+    <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout.html" />
+    <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html" />
+    <link rel="import" href="/bower_components/iron-ajax/iron-request.html" />
+    <script src="/bower_components/moment/moment.js"></script>
+</head>
+
+<dom-module id="simple-todo">
+    <template>
+        <style is="custom-style">
+            .flex-horizontal-with-ratios {
+                @apply(--layout-horizontal);
+            }
+
+            .flex4child {
+                @apply(--layout-flex-4);
+            }
+
+            #content-checkbox {
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-direction: row;
+                -webkit-flex-direction: row;
+                flex-direction: row;
+                -ms-flex-align: center;
+                -webkit-align-items: center;
+                align-items: center;
+                width: 56px;
+            }
+        </style>
+        <paper-input-container>
+            <label>Add ToDo Items Yo</label>
+            <input is="iron-input" value="{{newToDoItem::input}}" />
+            <paper-icon-button icon="icons:add-circle-outline" suffix on-tap="addTodo"></paper-icon-button>
+        </paper-input-container>
+        <template is="dom-repeat" id="domRepeat" items="[[data]]">
+            <paper-item>
+                <div id="content-checkbox">
+                    <paper-checkbox checked="{{item.isDone}}" on-change="updateTodo"></paper-checkbox>
+                </div>
+                <paper-item-body two-line>
+                    <div>{{item.title}}</div>
+                    <div secondary>
+                        added, <em>{{item.dateAdded}}</em>
+                    </div>
+                </paper-item-body>
+                <paper-icon-button icon="icons:done" alt="check this!" on-tap="checkOutTodo">
+                </paper-icon-button>
+            </paper-item>
+        </template>
+        <iron-ajax id="getList"
+                   url="{{serviceurl}}"
+                   handle-as="json"
+                   on-response="handleGet"></iron-ajax>
+
+        <iron-ajax id="ajaxPost"
+                   url='{{serviceurl}}'
+                   handle-as="json"
+                   body='{{body}}'
+                   method="POST"
+                   content-type="application/json"
+                   on-response="handlePost"></iron-ajax>
+
+
+        <iron-ajax id="ajaxDelete"
+                   handle-as="json"
+                   method="DELETE"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax id="ajaxPut"
+                   handle-as="json"
+                   method="PUT"
+                   body='{{body}}'
+                   content-type="application/json"></iron-ajax>
+    </template>
+    <script>
+        Polymer({
+            is: "simple-todo",
+
+            properties: {
+                newToDoItem: {
+                    type: String,
+                    notify: true,
+                    value: ''
+                },
+                serviceurl: {
+                    type: String,
+                    notify: true,
+                    value: '/foo/'
+                },
+
+                body: {
+                    type: Object,
+                    notify: true
+                },
+                data: {
+                    type: Array,
+                    value: [],
+                    notify: true
+                },
+                listeners: {
+                    "delete": "checkOutTodo"
+                }
+
+            },
+
+
+            handleGet: function (data) {
+                var self = this;
+                self.data = data.detail.response.map(function (item) {
+                    return {
+                        id: item.id,
+                        title: item.title,
+                        isDone: item.isDone,
+                        dateAdded: moment(item.dateAdded).format('LLL')
+                    }
+                });
+            },
+
+            handlePost: function (data) {
+                var self = this;
+                if (data.detail.status === 201) {
+                    var createdTodo = {
+                        id: data.detail.response.id,
+                        title: data.detail.response.title,
+                        isDone: data.detail.response.isDone,
+                        dateAdded: moment(data.detail.response.dateAdded).format('LLL')
+                    }
+                    self.push('data', createdTodo);
+
+                    self.newTodo = '';
+                }
+            },
+
+            addTodo: function (e) {
+                var self = this;
+                //self.$.ajaxPost.url = getUrl();
+                self.body = { "title": this.newToDoItem };
+                self.$.ajaxPost.generateRequest();
+
+            },
+
+            checkOutTodo: function (e) {
+                var self = this;
+                self.$.ajaxDelete.url = self.$.getList.url + e.model.item.id;
+
+                self.$.ajaxDelete.generateRequest();
+
+                var index = self.data.indexOf(e.model.item);
+
+                if (index !== -1) {
+                    self.splice('data', index, 1);
+                }
+
+            },
+
+            updateTodo: function (e) {
+                var self = this;
+                //alert(self.properties.serviceurl.value);
+                self.$.ajaxPut.url = self.$.getList.url + e.model.item.id;
+                self.body = { "id": e.model.item.id, "title": e.model.item.title, "dateAdded": moment(e.model.item.dateAdded).format("YYYY-MM-DD HH:mm:ss"), "isDone": e.model.item.isDone };
+
+                self.$.ajaxPut.generateRequest();
+
+            },
+            attached: function () {
+                var self = this;
+                Polymer.RenderStatus.afterNextRender(this, function () {
+                    //alert(self.$.getList.url);
+                    self.$.getList.generateRequest();
+                });
+
+
+            }
+
+
+        });
+    </script>
+
+</dom-module>
