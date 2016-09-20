@@ -38,8 +38,8 @@
             }
         </style>
         <paper-input-container>
-            <label>Add ToDo Items Yo</label>
-            <input is="iron-input" value="{{newToDoItem::input}}" />
+            <label>Add ToDo Items</label>
+            <input id="itemInput" is="iron-input" value="{{newToDoItem::input}}" />
             <paper-icon-button icon="icons:add-circle-outline" suffix on-tap="addTodo"></paper-icon-button>
         </paper-input-container>
         <template is="dom-repeat" id="domRepeat" items="[[data]]">
@@ -137,7 +137,7 @@
                     }
                     self.push('data', createdTodo);
 
-                    self.newTodo = '';
+                    self.properties.newToDoItem.value = '';
                 }
             },
 
@@ -146,6 +146,9 @@
                 //self.$.ajaxPost.url = getUrl();
                 self.body = { "title": this.newToDoItem };
                 self.$.ajaxPost.generateRequest();
+                //self.properties.newToDoItem.value = '';
+                self.$.itemInput.value = '';
+                //alert('done');
 
             },
 
