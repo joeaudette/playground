@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 
-namespace spa_stack
+namespace WebApp
 {
     public class Startup
     {
@@ -37,8 +37,8 @@ namespace spa_stack
             });
 
             services.AddMvc()
-                //.AddApplicationPart(Assembly.Load(new AssemblyName("WebLib")))
-                .AddApplicationPart(Assembly.Load(new AssemblyName("CSharp.Web")))
+                //.AddApplicationPart(Assembly.Load(new AssemblyName("FSharp.WebLib")))
+                .AddApplicationPart(Assembly.Load(new AssemblyName("CSharp.WebLib")))
                 ;
         }
 

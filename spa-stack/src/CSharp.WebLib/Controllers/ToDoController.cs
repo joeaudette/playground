@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using CSharp.Models;
 using Microsoft.AspNetCore.Routing;
 
-namespace CSharp.Web.Controllers
+namespace CSharp.WebLib.Controllers
 {
     [Route("api/[controller]")]
     public class ToDoController : Controller
