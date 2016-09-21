@@ -37,7 +37,7 @@ namespace CSharp.Storage.NoDb
 
             var result =  await queries.GetAllAsync(projectId, cancellationToken).ConfigureAwait(false);
 
-            return result.ToList();
+            return result.OrderBy(x => x.DateAdded).ToList<ToDoItem>();
         }
 
         public async Task<ToDoItem> Find(string key, CancellationToken cancellationToken = default(CancellationToken))

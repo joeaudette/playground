@@ -37,7 +37,7 @@ namespace WebApp
             });
 
             services.AddMvc()
-                //.AddApplicationPart(Assembly.Load(new AssemblyName("FSharp.WebLib")))
+                .AddApplicationPart(Assembly.Load(new AssemblyName("FSharp.WebLib")))
                 .AddApplicationPart(Assembly.Load(new AssemblyName("CSharp.WebLib")))
                 ;
         }

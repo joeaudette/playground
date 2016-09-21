@@ -63,7 +63,7 @@ namespace CSharp.WebLib.Controllers
                 return BadRequest();
             }
 
-            var todo = queries.Find(id);
+            var todo = await queries.Find(id);
             if (todo == null)
             {
                 return NotFound();
