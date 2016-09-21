@@ -23,7 +23,8 @@ namespace CSharp.WebLib.Controllers
         private IToDoCommands commands;
         private IToDoQueries queries;
 
-        public async Task<IEnumerable<ToDoItem>> GetAll()
+        [HttpGet]
+        public async Task<IEnumerable<ToDoItem>> Get()
         {
             return await queries.GetAll();
         }
@@ -73,25 +74,25 @@ namespace CSharp.WebLib.Controllers
             return new NoContentResult();
         }
 
-        [HttpPatch("{id}")]
-        public async Task<IActionResult> Update([FromBody] ToDoItem item, string id)
-        {
-            if (item == null)
-            {
-                return BadRequest();
-            }
+        //[HttpPatch("{id}")]
+        //public async Task<IActionResult> Update([FromBody] ToDoItem item, string id)
+        //{
+        //    if (item == null)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            var todo = await queries.Find(id);
-            if (todo == null)
-            {
-                return NotFound();
-            }
+        //    var todo = await queries.Find(id);
+        //    if (todo == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            item.Id = todo.Id;
+        //    item.Id = todo.Id;
 
-            await commands.Update(item);
-            return new NoContentResult();
-        }
+        //    await commands.Update(item);
+        //    return new NoContentResult();
+        //}
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)

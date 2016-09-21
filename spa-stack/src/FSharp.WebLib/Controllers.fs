@@ -20,16 +20,8 @@ type FSToDoController(c, q) =
     member __.Get() =
            __.Queries.GetAll() // this should be awaited
 
-// thought it should be like this but it doesn't return any result in the browser
-//    [<HttpGet>]
-//    member __.Get() =
-//        async {
-//            let! data = __.Queries.GetAll()
-//        } |> Async.StartAsTask
-
-    
     [<HttpGet("{id}", Name = "GetFSTodo")>]
-    member __.GetToDoItem(id) = 
+        member __.GetToDoItem(id) = 
             let data = __.Queries.Find(id) // this should be awaited
             if isNull data 
                 then  __.NotFound() :> IActionResult
@@ -45,6 +37,7 @@ type FSToDoController(c, q) =
 //                else
 //                return new ObjectResult(data) :> IActionResult
 //        } //|> Async.StartAsTask
+    
 
 
     [<HttpPost>]
@@ -151,4 +144,6 @@ type FSToDoController(c, q) =
 //                    Async.AwaitTask (this.Commands.Remove(toDo)) |> ignore
 //                    return new NoContentResult() :> IActionResult
 //        } //|> Async.StartAsTask
+
+
 
