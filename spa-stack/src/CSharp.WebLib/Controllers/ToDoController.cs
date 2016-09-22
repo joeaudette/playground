@@ -48,10 +48,7 @@ namespace CSharp.WebLib.Controllers
                 return BadRequest();
             }
             if (string.IsNullOrEmpty(item.Id)) item.Id = Guid.NewGuid().ToString();
-
-            //RouteValueDictionary rv = new RouteValueDictionary();
-           //rv.Add("id",v)
-
+            
             await commands.Add(item);
             return CreatedAtRoute("GetTodo", new { id = item.Id }, item);
         }

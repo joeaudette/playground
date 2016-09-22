@@ -3,6 +3,7 @@ namespace FSharp.WebLib
 open System
 open System.Collections.Generic
 open System.Linq
+open System.Threading
 open System.Threading.Tasks
 open Microsoft.AspNetCore.Mvc
 open Microsoft.AspNetCore.Routing
@@ -20,24 +21,33 @@ type FSToDoController(c, q) =
     member __.Get() =
            __.Queries.GetAll() // this should be awaited
 
-    [<HttpGet("{id}", Name = "GetFSTodo")>]
-        member __.GetToDoItem(id) = 
-            let data = __.Queries.Find(id) // this should be awaited
-            if isNull data 
-                then  __.NotFound() :> IActionResult
-                else
-                new ObjectResult(data) :> IActionResult 
-
-//    [<HttpGet("{id}", Name = "GetFSTodo")>]
-//    member this.GetToDoItem(id) = 
+// this works but produces slightly different json output than the C# version
+//    [<HttpGet>]
+//    member __.Get() =
 //        async {
-//            let data = Async.AwaitTask (this.Queries.Find(id))
-//            if isNull data 
-//                then return this.NotFound() :> IActionResult
-//                else
-//                return new ObjectResult(data) :> IActionResult
-//        } //|> Async.StartAsTask
-    
+//               let! data = __.Queries.GetAll() |> asyncReturn
+//               return data  }
+//            |> Async.StartAsTask
+
+// this works but is not async
+//    [<HttpGet("{id}", Name = "GetFSTodo")>]
+//    member __.GetToDoItem(id) = 
+//        let data = __.Queries.Find(id) // this should be awaited
+//        if isNull data 
+//            then  __.NotFound() :> IActionResult
+//            else
+//            new ObjectResult(data) :> IActionResult 
+
+// this works!
+    [<HttpGet("{id}", Name = "GetFSTodo")>]
+    member __.GetToDoItem(id) = 
+        async {
+            let! data = __.Queries.Find(id) |> asyncReturn
+            if isNull data 
+                then return  __.NotFound() :> IActionResult
+                else
+                    return new ObjectResult(data) :> IActionResult  } 
+            |> Async.StartAsTask
 
 
     [<HttpPost>]
