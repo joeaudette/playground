@@ -16,18 +16,18 @@ type FSToDoController(c, q) =
     member __.Commands:IToDoCommands = c
     member __.Queries:IToDoQueries = q
 
-// this works but isn't async I think
-    [<HttpGet>]
-    member __.Get() =
-           __.Queries.GetAll() // this should be awaited
-
-// this works but produces slightly different json output than the C# version
+// this works but isn't async 
 //    [<HttpGet>]
 //    member __.Get() =
-//        async {
-//               let! data = __.Queries.GetAll() |> asyncReturn
-//               return data  }
-//            |> Async.StartAsTask
+//           __.Queries.GetAll() // this should be awaited
+
+// this works 
+    [<HttpGet>]
+    member __.Get() =
+        async {
+               let! data = __.Queries.GetAll() |> asyncReturn // I think data is a tuple of Result, AsyncState
+               return data.Result  }
+            |> Async.StartAsTask
 
 // this works but is not async
 //    [<HttpGet("{id}", Name = "GetFSTodo")>]
@@ -43,60 +43,61 @@ type FSToDoController(c, q) =
     member __.GetToDoItem(id) = 
         async {
             let! data = __.Queries.Find(id) |> asyncReturn
-            if isNull data 
+            if isNull data.Result 
                 then return  __.NotFound() :> IActionResult
                 else
-                    return new ObjectResult(data) :> IActionResult  } 
+                    return new ObjectResult(data.Result) :> IActionResult  } 
             |> Async.StartAsTask
 
+// this works but is not async
+//    [<HttpPost>]
+//    member __.Create([<FromBody>] item:ToDoItem) = 
+//            item.Id <- Guid.NewGuid().ToString()
+//            (__.Commands.Add(item)) |> ignore // this should be awaited
+//            let rv = new RouteValueDictionary()
+//            rv.Add("id",item.Id)
+//            __.CreatedAtRoute("GetTodo", rv, item) :> IActionResult        
 
     [<HttpPost>]
     member __.Create([<FromBody>] item:ToDoItem) = 
-            item.Id <- Guid.NewGuid().ToString()
-            (__.Commands.Add(item)) |> ignore // this should be awaited
-            let rv = new RouteValueDictionary()
-            rv.Add("id",item.Id)
-            __.CreatedAtRoute("GetTodo", rv, item) :> IActionResult        
+        async {
+            if isNull item 
+                then return __.BadRequest() :> IActionResult
+                else
+                    item.Id <- Guid.NewGuid().ToString()
+                    (__.Commands.Add(item)) |> asyncReturn |> ignore 
+                    let rv = new RouteValueDictionary()
+                    rv.Add("id",item.Id)
+                    return __.CreatedAtRoute("GetTodo", rv, item) :> IActionResult  } 
+            |> Async.StartAsTask
 
-//    [<HttpPost>]
-//    member this.Create([<FromBody>] item:ToDoItem) = 
-//        async {
-//            item.Id <- Guid.NewGuid().ToString()
-//            Async.AwaitTask (this.Commands.Add(item)) |> ignore
-//            let rv = new RouteValueDictionary()
-//            rv.Add("id",item.Id)
-//            return this.CreatedAtRoute("GetTodo", rv, item) :> IActionResult        
-//        } //|> Async.StartAsTask
+// this works but isn't async
+//    [<HttpPut("{id}")>]
+//    member __.Update(id:String, [<FromBody>] item:ToDoItem) = 
+//            if isNull item || String.IsNullOrEmpty item.Id
+//                then __.BadRequest() :> IActionResult
+//                else
+//                    let data = __.Queries.Find(id)
+//                    if isNull data 
+//                        then __.NotFound() :> IActionResult
+//                    else
+//                        (__.Commands.Update(item)) |> ignore // this should be awaited
+//                        new NoContentResult() :> IActionResult
 
     [<HttpPut("{id}")>]
     member __.Update(id:String, [<FromBody>] item:ToDoItem) = 
+        async {
             if isNull item || String.IsNullOrEmpty item.Id
-                then __.BadRequest() :> IActionResult
+                then return __.BadRequest() :> IActionResult
                 else
-                    let data = __.Queries.Find(id)
-                    if isNull data 
-                        then __.NotFound() :> IActionResult
+                    let! data = __.Queries.Find(id) |> asyncReturn
+                    if isNull data.Result
+                        then return __.NotFound() :> IActionResult
                     else
-                        (__.Commands.Update(item)) |> ignore // this should be awaited
-                        new NoContentResult() :> IActionResult
+                        (__.Commands.Update(item)) |> asyncReturn |> ignore 
+                        return new NoContentResult() :> IActionResult } 
+            |> Async.StartAsTask
              
-
-
-//    [<HttpPut("{id}")>]
-//    member this.Update(id:String, [<FromBody>] item:ToDoItem) = 
-//        async {
-//            if isNull item || String.IsNullOrEmpty item.Id
-//                then return this.BadRequest() :> IActionResult
-//                else
-//                    let! data = Async.AwaitTask (this.Queries.Find(id))
-//                    if isNull data 
-//                        then return this.NotFound() :> IActionResult
-//                    else
-//                        Async.AwaitTask (this.Commands.Update(item)) |> ignore
-//                        return new NoContentResult() :> IActionResult
-//             
-//        } //|> Async.StartAsTask
-//
 //    // TODO fix duplicate code, can/should it just return invoke the above method?
 //    // note that the method signature params had to be reversed to get it to compile
 //    // should these methods have different names?
@@ -107,41 +108,52 @@ type FSToDoController(c, q) =
 //    // I conclude that this method is not correctly implemented currently. How to implement it correctly?
 //    // same problem in the C# version
 
+//    [<HttpPatch("{id}")>]
+//    member __.Update([<FromBody>] item:ToDoItem, id:String) = 
+//            if isNull item || String.IsNullOrEmpty item.Id
+//                then __.BadRequest() :> IActionResult
+//                else
+//                    let data = __.Queries.Find(id)
+//                    if isNull data 
+//                        then __.NotFound() :> IActionResult
+//                    else
+//                        (__.Commands.Update(item)) |> ignore // this should be awaited
+//                        new NoContentResult() :> IActionResult
+
     [<HttpPatch("{id}")>]
     member __.Update([<FromBody>] item:ToDoItem, id:String) = 
+        async {
             if isNull item || String.IsNullOrEmpty item.Id
-                then __.BadRequest() :> IActionResult
+                then return __.BadRequest() :> IActionResult
                 else
-                    let data = __.Queries.Find(id)
-                    if isNull data 
-                        then __.NotFound() :> IActionResult
+                    let! data = __.Queries.Find(id) |> asyncReturn
+                    if isNull data.Result
+                        then return __.NotFound() :> IActionResult
                     else
-                        (__.Commands.Update(item)) |> ignore // this should be awaited
-                        new NoContentResult() :> IActionResult
+                        (__.Commands.Update(item)) |> asyncReturn |> ignore 
+                        return new NoContentResult() :> IActionResult } 
+            |> Async.StartAsTask
 
-//    [<HttpPatch("{id}")>]
-//    member this.Update([<FromBody>] item:ToDoItem, id:String) = 
-//        async {
-//            if isNull item || String.IsNullOrEmpty item.Id
-//                then return this.BadRequest() :> IActionResult
+// this works but isn't async
+//    [<HttpDelete("{id}")>]
+//    member __.Delete(id:String) = 
+//            let toDo = Async.AwaitTask (__.Queries.Find(id)) |> Async.RunSynchronously
+//            if isNull toDo
+//                then __.NotFound() :> IActionResult
 //                else
-//                    let! data = Async.AwaitTask (this.Queries.Find(id))
-//                    if isNull data 
-//                        then return this.NotFound() :> IActionResult
-//                    else
-//                        Async.AwaitTask (this.Commands.Update(item)) |> ignore
-//                        return new NoContentResult() :> IActionResult
-//             
-//        } //|> Async.StartAsTask
+//                    (__.Commands.Remove(toDo)) |> ignore // this should be awaited
+//                    new NoContentResult() :> IActionResult
 
     [<HttpDelete("{id}")>]
     member __.Delete(id:String) = 
-            let toDo = Async.AwaitTask (__.Queries.Find(id)) |> Async.RunSynchronously
-            if isNull toDo
-                then __.NotFound() :> IActionResult
+        async {
+            let! toDo =  __.Queries.Find(id) |> asyncReturn
+            if isNull toDo.Result
+                then return __.NotFound() :> IActionResult
                 else
-                    (__.Commands.Remove(toDo)) |> ignore // this should be awaited
-                    new NoContentResult() :> IActionResult
+                    (__.Commands.Remove(toDo.Result)) |> asyncReturn |> ignore 
+                    return new NoContentResult() :> IActionResult } 
+            |> Async.StartAsTask
 
 
 //    [<HttpDelete("{id}")>]
