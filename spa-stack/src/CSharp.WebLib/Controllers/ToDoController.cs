@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using CSharp.Models;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace CSharp.WebLib.Controllers
 {
@@ -73,10 +74,12 @@ namespace CSharp.WebLib.Controllers
             return new NoContentResult();
         }
 
+        //http://benfoster.io/blog/aspnet-core-json-patch-partial-api-updates
+        // this method is not currently used from the client
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Patch(string id, [FromBody] ToDoItem item)
+        public async Task<IActionResult> Patch(string id, [FromBody] JsonPatchDocument<ToDoItem> patch)
         {
-            if (item == null)
+            if (patch == null)
             {
                 return BadRequest();
             }
@@ -87,10 +90,25 @@ namespace CSharp.WebLib.Controllers
                 return NotFound();
             }
 
-            item.Id = todo.Id;
+            var patched = todo.Copy();
 
-            await commands.Update(item);
-            return new NoContentResult();
+            patch.ApplyTo(patched, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return new BadRequestObjectResult(ModelState);
+            }
+
+            await commands.Update(patched);
+
+            var model = new
+            {
+                original = todo,
+                patched = patched
+            };
+
+            return Ok(model);
+            
         }
 
         [HttpDelete("{id}")]

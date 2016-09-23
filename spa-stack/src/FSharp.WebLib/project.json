@@ -27,6 +27,7 @@
             "Microsoft.FSharp.Core.netcore": "1.0.0-*",
             "NETStandard.Library": "1.6.0",
             "Microsoft.AspNetCore.Mvc": "1.0.*",
+            "Microsoft.AspNetCore.JsonPatch": "1.0.*",
             "CSharp.Models": "1.0.0-*"
         }
     }

@@ -7,8 +7,10 @@ open System.Threading
 open System.Threading.Tasks
 open Microsoft.AspNetCore.Mvc
 open Microsoft.AspNetCore.Routing
+open Microsoft.AspNetCore.JsonPatch
 open CSharp.Models
 
+type PatchedToDoModel = { Original:ToDoItem; Patched:ToDoItem }
 
 [<Route("api/[controller]")>]
 type FSToDoController(c, q) =
@@ -65,23 +67,26 @@ type FSToDoController(c, q) =
              
 
     // http://restful-api-design.readthedocs.io/en/latest/methods.html#patch-vs-put
-    // seems like to do patch right we need the method to accept a dictionary instead of model bind to a ToDoItem
-    // so that we know specifically which properties have changed and then we would only update the changed properties
-    // I conclude that this method is not correctly implemented currently. How to implement it correctly?
-    // same problem in the C# version
-
+    // http://benfoster.io/blog/aspnet-core-json-patch-partial-api-updates
+    // this method is not currently used from the client
     [<HttpPatch("{id}")>]
-    member __.Patch(id:String, [<FromBody>] item:ToDoItem) = 
+    member __.Patch(id:String, [<FromBody>] patch:JsonPatchDocument<ToDoItem>) = 
         async {
-            if isNull item || String.IsNullOrEmpty item.Id
+            if isNull patch || String.IsNullOrEmpty id
                 then return __.BadRequest() :> IActionResult
                 else
                     let! data = __.Queries.Find(id) |> asyncReturn
                     if isNull data.Result
                         then return __.NotFound() :> IActionResult
                     else
-                        (__.Commands.Update(item)) |> asyncReturn |> ignore 
-                        return new NoContentResult() :> IActionResult } 
+                        let patched = data.Result.Copy()
+                        patch.ApplyTo(patched, __.ModelState);
+                        if __.ModelState.IsValid then
+                            (__.Commands.Update(patched)) |> asyncReturn |> ignore 
+                            let model = { Original = data.Result; Patched = patched; }
+                            return __.Ok(model) :> IActionResult 
+                        else
+                            return new BadRequestObjectResult(__.ModelState) :> IActionResult } 
             |> Async.StartAsTask
 
 
