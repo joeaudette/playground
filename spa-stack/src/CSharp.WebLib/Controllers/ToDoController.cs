@@ -29,8 +29,8 @@ namespace CSharp.WebLib.Controllers
             return await queries.GetAll();
         }
 
-        [HttpGet("{id}", Name = "GetTodo")]
-        public async Task<IActionResult> GetById(string id)
+        [HttpGet("{id}", Name = "GetToDo")]
+        public async Task<IActionResult> Get(string id)
         {
             var item = await queries.Find(id);
             if (item == null)
@@ -41,7 +41,7 @@ namespace CSharp.WebLib.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ToDoItem item)
+        public async Task<IActionResult> Post([FromBody] ToDoItem item)
         {
             if (item == null)
             {
@@ -50,11 +50,13 @@ namespace CSharp.WebLib.Controllers
             if (string.IsNullOrEmpty(item.Id)) item.Id = Guid.NewGuid().ToString();
             
             await commands.Add(item);
-            return CreatedAtRoute("GetTodo", new { id = item.Id }, item);
+            //The CreatedAtRoute method is intended to return a URI to the newly created 
+            // resource when you invoke a POST method to store some new object.
+            return CreatedAtRoute("GetToDo", new { id = item.Id }, item);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, [FromBody] ToDoItem item)
+        public async Task<IActionResult> Put(string id, [FromBody] ToDoItem item)
         {
             if (item == null || item.Id != id)
             {
@@ -71,25 +73,25 @@ namespace CSharp.WebLib.Controllers
             return new NoContentResult();
         }
 
-        //[HttpPatch("{id}")]
-        //public async Task<IActionResult> Update([FromBody] ToDoItem item, string id)
-        //{
-        //    if (item == null)
-        //    {
-        //        return BadRequest();
-        //    }
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> Patch(string id, [FromBody] ToDoItem item)
+        {
+            if (item == null)
+            {
+                return BadRequest();
+            }
 
-        //    var todo = await queries.Find(id);
-        //    if (todo == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var todo = await queries.Find(id);
+            if (todo == null)
+            {
+                return NotFound();
+            }
 
-        //    item.Id = todo.Id;
+            item.Id = todo.Id;
 
-        //    await commands.Update(item);
-        //    return new NoContentResult();
-        //}
+            await commands.Update(item);
+            return new NoContentResult();
+        }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)

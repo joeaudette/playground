@@ -143,23 +143,18 @@
 
             addTodo: function (e) {
                 var self = this;
-                //self.$.ajaxPost.url = getUrl();
                 self.body = { "title": this.newToDoItem };
                 self.$.ajaxPost.generateRequest();
-                //self.properties.newToDoItem.value = '';
                 self.$.itemInput.value = '';
-                //alert('done');
 
             },
 
             checkOutTodo: function (e) {
                 var self = this;
                 self.$.ajaxDelete.url = self.$.getList.url + e.model.item.id;
-
                 self.$.ajaxDelete.generateRequest();
 
                 var index = self.data.indexOf(e.model.item);
-
                 if (index !== -1) {
                     self.splice('data', index, 1);
                 }
@@ -168,7 +163,6 @@
 
             updateTodo: function (e) {
                 var self = this;
-                //alert(self.properties.serviceurl.value);
                 self.$.ajaxPut.url = self.$.getList.url + e.model.item.id;
                 self.body = { "id": e.model.item.id, "title": e.model.item.title, "dateAdded": moment(e.model.item.dateAdded).format("YYYY-MM-DD HH:mm:ss"), "isDone": e.model.item.isDone };
 
@@ -182,11 +176,8 @@
                     self.$.getList.generateRequest();
                 });
 
-
             }
-
 
         });
     </script>
-
 </dom-module>
