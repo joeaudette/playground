@@ -41,28 +41,27 @@ type FSToDoController(c, q) =
     [<HttpPost>]
     member this.Post([<FromBody>] item:ToDoItem) =
         ActionResult.ofAsync <| async {
-            if isNull item 
-                then return this.BadRequest() :> _
-                else
-                    item.Id <- Guid.NewGuid().ToString()
-                    do! this.Commands.Add(item) |> Async.AwaitTask
-                    let rv = new RouteValueDictionary()
-                    rv.Add("id",item.Id)
-                    return this.CreatedAtRoute("GetFsToDo", rv, item) :> _  } 
+            if isNull item then return this.BadRequest() :> _
+            else
+                item.Id <- Guid.NewGuid() |> string
+                do! this.Commands.Add(item) |> Async.AwaitTask
+                let rv = RouteValueDictionary()
+                rv.Add("id",item.Id)
+                return this.CreatedAtRoute("GetFsToDo", rv, item) :> _ } 
 
     //update
     [<HttpPut("{id}")>]
     member this.Put(id:String, [<FromBody>] item:ToDoItem) =
         ActionResult.ofAsync <| async {
-            if isNull item || String.IsNullOrEmpty item.Id
-                then return this.BadRequest() :> _
-                else
-                    let! dataOrDefault = this.Queries.Find(id) |> Async.AwaitTask
-                    match Option.ofObj dataOrDefault with
-                    | None -> return this.NotFound() :> _
-                    | Some toDo ->
-                        do! this.Commands.Update(item) |> Async.AwaitTask 
-                        return new NoContentResult() :> _ } 
+            if isNull item || String.IsNullOrEmpty item.Id then
+                return this.BadRequest() :> _
+            else
+                let! dataOrDefault = this.Queries.Find(id) |> Async.AwaitTask
+                match Option.ofObj dataOrDefault with
+                | None -> return this.NotFound() :> _
+                | Some toDo ->
+                    do! this.Commands.Update(item) |> Async.AwaitTask 
+                    return NoContentResult() :> _ } 
 
     // http://restful-api-design.readthedocs.io/en/latest/methods.html#patch-vs-put
     // http://benfoster.io/blog/aspnet-core-json-patch-partial-api-updates
@@ -70,22 +69,21 @@ type FSToDoController(c, q) =
     [<HttpPatch("{id}")>]
     member this.Patch(id:String, [<FromBody>] patch:JsonPatchDocument<ToDoItem>) =
         ActionResult.ofAsync <| async {
-            if isNull patch || String.IsNullOrEmpty id
-                then return this.BadRequest() :> _
-                else
-                    let! dataOrDefault = this.Queries.Find(id) |> Async.AwaitTask
-                    match Option.ofObj dataOrDefault with
-                    | None -> return this.NotFound() :> _
-                    | Some toDo ->
-                        let patched = toDo.Copy()
-                        patch.ApplyTo(patched, this.ModelState);
-                        if this.ModelState.IsValid then
-                            do! this.Commands.Update(patched) |> Async.AwaitTask
-                            let model = { Original = toDo; Patched = patched; }
-                            return this.Ok(model) :> _ 
-                        else
-                            return BadRequestObjectResult(this.ModelState) :> _ } 
-
+            if isNull patch || String.IsNullOrEmpty id then
+                return this.BadRequest() :> _
+            elif this.ModelState.IsValid then
+                return BadRequestObjectResult(this.ModelState) :> _
+            else
+                let! dataOrDefault = this.Queries.Find(id) |> Async.AwaitTask
+                match Option.ofObj dataOrDefault with
+                | None -> return this.NotFound() :> _
+                | Some toDo ->
+                    let patched = toDo.Copy()
+                    patch.ApplyTo(patched, this.ModelState)
+                    do! this.Commands.Update(patched) |> Async.AwaitTask
+                    let model = { Original = toDo; Patched = patched }
+                    return this.Ok(model) :> _ }
+ 
     [<HttpDelete("{id}")>]
     member this.Delete(id:string) =
         ActionResult.ofAsync <| async {
@@ -93,5 +91,5 @@ type FSToDoController(c, q) =
             match Option.ofObj dataOrDefault with
             | None -> return this.NotFound() :> _
             | Some toDo ->
-                    do! this.Commands.Remove(toDo) |> Async.AwaitTask 
-                    return NoContentResult() :> _ } 
+                do! this.Commands.Remove(toDo) |> Async.AwaitTask 
+                return NoContentResult() :> _ }
