@@ -22,21 +22,21 @@ type FSToDoController(c, q) =
     [<HttpGet>]
     member __.Get() =
         async {
-               let! data = __.Queries.GetAll() |> asyncReturn // I think data is a tuple of Result, AsyncState
-               return data.Result  }
+               let! data = Async.AwaitTask(__.Queries.GetAll()) 
+               return new ObjectResult(data) :> IActionResult }
             |> Async.StartAsTask
 
     [<HttpGet("{id}", Name = "GetFsToDo")>]
-    member __.Get(id) = 
+    member __.Get(id)  = 
         async {
-            let! data = __.Queries.Find(id) |> asyncReturn
-            if isNull data.Result 
+            let! data = Async.AwaitTask(__.Queries.Find(id))
+            if isNull data 
                 then return  __.NotFound() :> IActionResult
                 else
-                    return new ObjectResult(data.Result) :> IActionResult  } 
+                    return new ObjectResult(data) :> IActionResult  } 
             |> Async.StartAsTask
 
-
+    // create
     [<HttpPost>]
     member __.Post([<FromBody>] item:ToDoItem) = 
         async {
@@ -44,24 +44,24 @@ type FSToDoController(c, q) =
                 then return __.BadRequest() :> IActionResult
                 else
                     item.Id <- Guid.NewGuid().ToString()
-                    (__.Commands.Add(item)) |> asyncReturn |> ignore 
+                    do! Async.AwaitTask(__.Commands.Add(item))
                     let rv = new RouteValueDictionary()
                     rv.Add("id",item.Id)
                     return __.CreatedAtRoute("GetFsToDo", rv, item) :> IActionResult  } 
             |> Async.StartAsTask
 
-
+    //update
     [<HttpPut("{id}")>]
     member __.Put(id:String, [<FromBody>] item:ToDoItem) = 
         async {
             if isNull item || String.IsNullOrEmpty item.Id
                 then return __.BadRequest() :> IActionResult
                 else
-                    let! data = __.Queries.Find(id) |> asyncReturn
-                    if isNull data.Result
+                    let! data = Async.AwaitTask(__.Queries.Find(id))  
+                    if isNull data
                         then return __.NotFound() :> IActionResult
                     else
-                        (__.Commands.Update(item)) |> asyncReturn |> ignore 
+                        do! Async.AwaitTask(__.Commands.Update(item)) 
                         return new NoContentResult() :> IActionResult } 
             |> Async.StartAsTask
              
@@ -75,15 +75,15 @@ type FSToDoController(c, q) =
             if isNull patch || String.IsNullOrEmpty id
                 then return __.BadRequest() :> IActionResult
                 else
-                    let! data = __.Queries.Find(id) |> asyncReturn
-                    if isNull data.Result
+                    let! toDo = Async.AwaitTask(__.Queries.Find(id)) 
+                    if isNull toDo
                         then return __.NotFound() :> IActionResult
                     else
-                        let patched = data.Result.Copy()
+                        let patched = toDo.Copy()
                         patch.ApplyTo(patched, __.ModelState);
                         if __.ModelState.IsValid then
-                            (__.Commands.Update(patched)) |> asyncReturn |> ignore 
-                            let model = { Original = data.Result; Patched = patched; }
+                            do! Async.AwaitTask(__.Commands.Update(patched))
+                            let model = { Original = toDo; Patched = patched; }
                             return __.Ok(model) :> IActionResult 
                         else
                             return new BadRequestObjectResult(__.ModelState) :> IActionResult } 
@@ -93,11 +93,11 @@ type FSToDoController(c, q) =
     [<HttpDelete("{id}")>]
     member __.Delete(id:string) = 
         async {
-            let! toDo =  __.Queries.Find(id) |> asyncReturn
-            if isNull toDo.Result
+            let! toDo =  Async.AwaitTask(__.Queries.Find(id)) 
+            if isNull toDo
                 then return __.NotFound() :> IActionResult
                 else
-                    (__.Commands.Remove(toDo.Result)) |> asyncReturn |> ignore 
+                    do! Async.AwaitTask(__.Commands.Remove(toDo)) 
                     return new NoContentResult() :> IActionResult } 
             |> Async.StartAsTask
 
