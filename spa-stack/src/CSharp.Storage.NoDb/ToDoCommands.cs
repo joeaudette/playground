@@ -26,7 +26,7 @@ namespace CSharp.Storage.NoDb
         private IProjectIdResolver projectResolver;
         private string projectId = null;
 
-        private async Task EnsureBlogSettings()
+        private async Task EnsureProjectId()
         {
             if (projectId != null) { return; }
             projectId = await projectResolver.GetProjectId().ConfigureAwait(false);
@@ -38,7 +38,7 @@ namespace CSharp.Storage.NoDb
             if (item == null) throw new ArgumentNullException("ToDoItem must be provided");
             cancellationToken.ThrowIfCancellationRequested();
 
-            await EnsureBlogSettings().ConfigureAwait(false);
+            await EnsureProjectId().ConfigureAwait(false);
 
             await commands.CreateAsync(projectId, item.Id, item).ConfigureAwait(false);
 
@@ -49,7 +49,7 @@ namespace CSharp.Storage.NoDb
             if (item == null) throw new ArgumentNullException("ToDoItem must be provided");
             cancellationToken.ThrowIfCancellationRequested();
 
-            await EnsureBlogSettings().ConfigureAwait(false);
+            await EnsureProjectId().ConfigureAwait(false);
 
             await commands.DeleteAsync(projectId, item.Id).ConfigureAwait(false);
 
@@ -60,7 +60,7 @@ namespace CSharp.Storage.NoDb
             if (item == null) throw new ArgumentNullException("ToDoItem must be provided");
             cancellationToken.ThrowIfCancellationRequested();
 
-            await EnsureBlogSettings().ConfigureAwait(false);
+            await EnsureProjectId().ConfigureAwait(false);
 
             await commands.UpdateAsync(projectId, item.Id, item).ConfigureAwait(false);
 
