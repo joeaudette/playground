@@ -10,11 +10,6 @@ open Microsoft.AspNetCore.Routing
 
 [<AutoOpen>]
 module Interop =
-    let inline isNull value = System.Object.ReferenceEquals(value, null)
-    let inline nil<'T> = Unchecked.defaultof<'T>
-    let inline safeUnbox value = if isNull value then nil else unbox value
-    let (|Null|_|) value = if isNull value then Some() else None
-
     type Result<'TSuccess,'TFailure> = 
     | Success of 'TSuccess
     | Failure of 'TFailure
@@ -32,16 +27,6 @@ module Interop =
         member this.ReturnFrom x = x
  
     let asyncEither = AsyncEitherBuilder ()
-
-    let liftAsync x = async {
-        let! x' = x
-        return Success x' }
- 
-    // 'a -> Async<'a>
-    let asyncReturn x = async { return x }
-   
-    
-
 
 //[<AutoOpen>]
 //module Async =
