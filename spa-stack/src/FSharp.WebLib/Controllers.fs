@@ -84,7 +84,7 @@ type FSToDoController(c, q) =
                             let model = { Original = toDo; Patched = patched; }
                             return this.Ok(model) :> _ 
                         else
-                            return new BadRequestObjectResult(this.ModelState) :> _ } 
+                            return BadRequestObjectResult(this.ModelState) :> _ } 
 
     [<HttpDelete("{id}")>]
     member this.Delete(id:string) =
@@ -94,4 +94,4 @@ type FSToDoController(c, q) =
             | None -> return this.NotFound() :> _
             | Some toDo ->
                     do! this.Commands.Remove(toDo) |> Async.AwaitTask 
-                    return new NoContentResult() :> _ } 
+                    return NoContentResult() :> _ } 
