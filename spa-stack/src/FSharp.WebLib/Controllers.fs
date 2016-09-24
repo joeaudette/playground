@@ -1,14 +1,11 @@
 namespace FSharp.WebLib
 
 open System
-open System.Collections.Generic
-open System.Linq
-open System.Threading
-open System.Threading.Tasks
 open Microsoft.AspNetCore.Mvc
 open Microsoft.AspNetCore.Routing
 open Microsoft.AspNetCore.JsonPatch
-open CSharp.Models
+
+open FSharp.Models
 
 type PatchedToDoModel = { Original: ToDoItem; Patched: ToDoItem }
 
@@ -23,14 +20,14 @@ type FSToDoController(commands: IToDoCommands, queries: IToDoQueries) =
     [<HttpGet>]
     member this.Get() = 
         ActionResult.ofAsync <| async {
-            let! data = queries.GetAll() |> Async.AwaitTask 
+            let! data = queries.GetAll()
             return JsonResult(data) :> _ } 
 
     [<HttpGet("{id}", Name = "GetFsToDo")>]
     member this.Get(id) =
         ActionResult.ofAsync <| async {
-            let! dataOrDefault = queries.Find(id) |> Async.AwaitTask
-            match Option.ofObj dataOrDefault with 
+            let! res = queries.Find id
+            match res with 
             | None -> return this.NotFound() :> _
             | Some data -> return ObjectResult(data) :> _ } 
 
@@ -38,10 +35,11 @@ type FSToDoController(commands: IToDoCommands, queries: IToDoQueries) =
     [<HttpPost>]
     member this.Post([<FromBody>] item:ToDoItem) =
         ActionResult.ofAsync <| async {
-            if isNull item then return this.BadRequest() :> _
+            if not this.ModelState.IsValid then return this.BadRequest() :> _
             else
-                item.Id <- Guid.NewGuid() |> string
-                do! commands.Add(item) |> Async.AwaitTask
+                // TOCONSIDER client should supply id so HTTP request can be idempotently retried
+                let item = { item with Id = Guid.NewGuid() |> string }
+                do! commands.Add item
                 let rv = RouteValueDictionary()
                 rv.Add("id",item.Id)
                 return this.CreatedAtRoute("GetFsToDo", rv, item) :> _ } 
@@ -50,14 +48,14 @@ type FSToDoController(commands: IToDoCommands, queries: IToDoQueries) =
     [<HttpPut("{id}")>]
     member this.Put(id:String, [<FromBody>] item:ToDoItem) =
         ActionResult.ofAsync <| async {
-            if isNull item || String.IsNullOrEmpty item.Id then
+            if (not this.ModelState.IsValid) || String.IsNullOrEmpty item.Id then
                 return this.BadRequest() :> _
             else
-                let! dataOrDefault = queries.Find(id) |> Async.AwaitTask
-                match Option.ofObj dataOrDefault with
+                let! res = queries.Find id
+                match res with
                 | None -> return this.NotFound() :> _
                 | Some toDo ->
-                    do! commands.Update(item) |> Async.AwaitTask 
+                    do! commands.Update item
                     return NoContentResult() :> _ } 
 
     // http://restful-api-design.readthedocs.io/en/latest/methods.html#patch-vs-put
@@ -68,25 +66,25 @@ type FSToDoController(commands: IToDoCommands, queries: IToDoQueries) =
         ActionResult.ofAsync <| async {
             if isNull patch || String.IsNullOrEmpty id then
                 return this.BadRequest() :> _
-            elif this.ModelState.IsValid then
-                return BadRequestObjectResult(this.ModelState) :> _
             else
-                let! dataOrDefault = queries.Find(id) |> Async.AwaitTask
-                match Option.ofObj dataOrDefault with
+                let! res = queries.Find id
+                match res with
                 | None -> return this.NotFound() :> _
-                | Some toDo ->
-                    let patched = toDo.Copy()
-                    patch.ApplyTo(patched, this.ModelState)
-                    do! commands.Update(patched) |> Async.AwaitTask
-                    let model = { Original = toDo; Patched = patched }
-                    return this.Ok(model) :> _ }
+                | Some item ->
+                    let patched = item
+                    patch.ApplyTo(patched, this.ModelState) // NB ApplyTo mutates the ModelState
+                    if not this.ModelState.IsValid then
+                        return BadRequestObjectResult(this.ModelState) :> _
+                    else
+                        let model = { Original = item; Patched = patched }
+                        return this.Ok(model) :> _ }
  
     [<HttpDelete("{id}")>]
-    member this.Delete(id:string) =
+    member this.Delete(id: string) =
         ActionResult.ofAsync <| async {
-            let! dataOrDefault =  queries.Find(id) |> Async.AwaitTask
-            match Option.ofObj dataOrDefault with
+            let! res = queries.Find id
+            match res with
             | None -> return this.NotFound() :> _
-            | Some toDo ->
-                do! commands.Remove(toDo) |> Async.AwaitTask 
+            | Some item ->
+                do! commands.Remove item
                 return NoContentResult() :> _ }

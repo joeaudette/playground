@@ -1,28 +1,20 @@
 namespace FSharp.Models
 
 open System
-open System.Collections.Generic
-open System.Threading
-open System.Threading.Tasks
 
-    type ToDoItem = {
-      Id: string
-      Title: string
-      IsDone: bool 
-      DateAdded : DateTime
-      }
+type ToDoItemId = string
 
-    type ToDoItem with
-        member this.Copy = 
-            let result = { Id= this.Id; Title = this.Title; IsDone = this.IsDone; DateAdded = this.DateAdded }
-            result
+type ToDoItem = 
+    {   Id: ToDoItemId
+        Title: string
+        IsDone: bool 
+        DateAdded : DateTime }
 
-    type IToDoCommands =
-        abstract member Add: toDo:ToDoItem * ?cancellationToken:CancellationToken -> Task<unit>
-        abstract member Remove: toDo:ToDoItem * ?cancellationToken:CancellationToken -> Task<unit>
-        abstract member Update: toDo:ToDoItem * ?cancellationToken:CancellationToken -> Task<unit>
+type IToDoCommands =
+    abstract member Add: item:ToDoItem -> Async<unit>
+    abstract member Remove: item: ToDoItem -> Async<unit>
+    abstract member Update: item:ToDoItem -> Async<unit>
 
-    type IToDoQueries = 
-        abstract member GetAll: ?cancellationToken:CancellationToken -> Task<List<ToDoItem>>
-        abstract member Find: key:String * ?cancellationToken:CancellationToken -> Task<ToDoItem>
-
+type IToDoQueries =
+    abstract member GetAll: unit -> Async<ToDoItem list>
+    abstract member Find: key:String -> Async<ToDoItem option>
