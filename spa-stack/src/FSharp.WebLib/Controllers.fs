@@ -22,19 +22,10 @@ type FSToDoController(c, q) =
     [<HttpGet>]
     member __.Get() =
         async {
-               let! data = Async.AwaitTask(__.Queries.GetAll()) 
+               let! data = __.Queries.GetAll() |> Async.AwaitTask 
                return new JsonResult(data) :> IActionResult }
             |> Async.StartAsTask
 
-//    [<HttpGet("{id}", Name = "GetFsToDo")>]
-//    member __.Get(id)  = 
-//        async {
-//            let! data = Async.AwaitTask(__.Queries.Find(id))
-//            if isNull data 
-//                then return  __.NotFound() :> IActionResult
-//                else
-//                    return new ObjectResult(data) :> IActionResult  } 
-//            |> Async.StartAsTask
 
     [<HttpGet("{id}", Name = "GetFsToDo")>]
     member __.Get(id) = 
@@ -53,7 +44,7 @@ type FSToDoController(c, q) =
                 then return __.BadRequest() :> IActionResult
                 else
                     item.Id <- Guid.NewGuid().ToString()
-                    do! Async.AwaitTask(__.Commands.Add(item))
+                    do! __.Commands.Add(item) |> Async.AwaitTask
                     let rv = new RouteValueDictionary()
                     rv.Add("id",item.Id)
                     return __.CreatedAtRoute("GetFsToDo", rv, item) :> IActionResult  } 
@@ -66,11 +57,11 @@ type FSToDoController(c, q) =
             if isNull item || String.IsNullOrEmpty item.Id
                 then return __.BadRequest() :> IActionResult
                 else
-                    let! data = Async.AwaitTask(__.Queries.Find(id))  
-                    if isNull data
-                        then return __.NotFound() :> IActionResult
-                    else
-                        do! Async.AwaitTask(__.Commands.Update(item)) 
+                    let! dataOrDefault = __.Queries.Find(id) |> Async.AwaitTask
+                    match Option.ofObj dataOrDefault with
+                    | None -> return __.NotFound() :> IActionResult
+                    | Some toDo ->
+                        do! __.Commands.Update(item) |> Async.AwaitTask 
                         return new NoContentResult() :> IActionResult } 
             |> Async.StartAsTask
              
@@ -84,14 +75,14 @@ type FSToDoController(c, q) =
             if isNull patch || String.IsNullOrEmpty id
                 then return __.BadRequest() :> IActionResult
                 else
-                    let! toDo = Async.AwaitTask(__.Queries.Find(id)) 
-                    if isNull toDo
-                        then return __.NotFound() :> IActionResult
-                    else
+                    let! dataOrDefault = __.Queries.Find(id) |> Async.AwaitTask
+                    match Option.ofObj dataOrDefault with
+                    | None -> return __.NotFound() :> IActionResult
+                    | Some toDo ->
                         let patched = toDo.Copy()
                         patch.ApplyTo(patched, __.ModelState);
                         if __.ModelState.IsValid then
-                            do! Async.AwaitTask(__.Commands.Update(patched))
+                            do! __.Commands.Update(patched) |> Async.AwaitTask
                             let model = { Original = toDo; Patched = patched; }
                             return __.Ok(model) :> IActionResult 
                         else
@@ -102,11 +93,11 @@ type FSToDoController(c, q) =
     [<HttpDelete("{id}")>]
     member __.Delete(id:string) = 
         async {
-            let! toDo =  Async.AwaitTask(__.Queries.Find(id)) 
-            if isNull toDo
-                then return __.NotFound() :> IActionResult
-                else
-                    do! Async.AwaitTask(__.Commands.Remove(toDo)) 
+            let! dataOrDefault =  __.Queries.Find(id) |> Async.AwaitTask
+            match Option.ofObj dataOrDefault with
+            | None -> return __.NotFound() :> IActionResult
+            | Some toDo ->
+                    do! __.Commands.Remove(toDo) |> Async.AwaitTask 
                     return new NoContentResult() :> IActionResult } 
             |> Async.StartAsTask
 
