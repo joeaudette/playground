@@ -23,18 +23,27 @@ type FSToDoController(c, q) =
     member __.Get() =
         async {
                let! data = Async.AwaitTask(__.Queries.GetAll()) 
-               return new ObjectResult(data) :> IActionResult }
+               return new JsonResult(data) :> IActionResult }
             |> Async.StartAsTask
 
+//    [<HttpGet("{id}", Name = "GetFsToDo")>]
+//    member __.Get(id)  = 
+//        async {
+//            let! data = Async.AwaitTask(__.Queries.Find(id))
+//            if isNull data 
+//                then return  __.NotFound() :> IActionResult
+//                else
+//                    return new ObjectResult(data) :> IActionResult  } 
+//            |> Async.StartAsTask
+
     [<HttpGet("{id}", Name = "GetFsToDo")>]
-    member __.Get(id)  = 
-        async {
-            let! data = Async.AwaitTask(__.Queries.Find(id))
-            if isNull data 
-                then return  __.NotFound() :> IActionResult
-                else
-                    return new ObjectResult(data) :> IActionResult  } 
-            |> Async.StartAsTask
+    member __.Get(id) = 
+       async {
+            let! dataOrDefault = __.Queries.Find(id) |> Async.AwaitTask
+            match Option.ofObj dataOrDefault with 
+            | None -> return __.NotFound() :> IActionResult
+            | Some data -> return ObjectResult(data) :> IActionResult
+       } |> Async.StartAsTask
 
     // create
     [<HttpPost>]
