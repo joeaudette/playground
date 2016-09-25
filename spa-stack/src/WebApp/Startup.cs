@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using NoDb;
+using FSharp.Storage.NoDb;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace WebApp
@@ -32,11 +33,8 @@ namespace WebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddNoDbStorageForToDoItems();
-
-            services.AddNoDb<FSharp.Models.ToDoItem>();
-            services.TryAddScoped<FSharp.Storage.NoDb.IProjectIdResolver, FSharp.Storage.NoDb.DefaultProjectIdResolver>();
-            services.TryAddScoped<FSharp.Models.IToDoQueries, FSharp.Storage.NoDb.ToDoQueries>();
-            services.TryAddScoped<FSharp.Models.IToDoCommands, FSharp.Storage.NoDb.ToDoCommands>();
+            FSharp.Storage.NoDb.StartupExtensionsFSharp.AddNoDbStorageForToDoItemsFSharp(services);
+            services.AddNoDbStorageForToDoItemsFSharp(services);
 
             services.Configure<MvcOptions>(options =>
             {
