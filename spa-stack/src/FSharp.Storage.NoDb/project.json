@@ -8,14 +8,13 @@
             "includeFiles": [
                 "Storage.fs",
                 "ToDoCommands.fs",
-                "ToDoQueries.fs"
+                "ToDoQueries.fs",
+                "ZRegistration.fs"
 
             ]
         }
     },
 
-
-    
 
   "tools": {
     "dotnet-compile-fsc":"1.0.0-preview2-*"
