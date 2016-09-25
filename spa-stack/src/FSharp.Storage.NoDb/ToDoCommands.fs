@@ -1,6 +1,7 @@
 ﻿namespace FSharp.Storage.NoDb
 
 open FSharp.Models
+open NoDb
 
 type ToDoCommands(commands: IBasicCommands<ToDoItem>, pidResolver: IProjectIdResolver) =
     let cachedProjectId = None
@@ -15,7 +16,7 @@ type ToDoCommands(commands: IBasicCommands<ToDoItem>, pidResolver: IProjectIdRes
             return pid
     }
 
-    interface ITodoCommands with
+    interface IToDoCommands with
         member this.Add (item: ToDoItem) = async {
             let! projectId = getProjectId()
             return! commands.CreateAsync(projectId, item.Id, item) |> Async.AwaitTask }

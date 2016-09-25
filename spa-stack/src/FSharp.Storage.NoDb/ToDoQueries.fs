@@ -1,6 +1,7 @@
 ﻿namespace FSharp.Storage.NoDb
 
 open FSharp.Models
+open NoDb
 
 type ToDoQueries(queries: IBasicQueries<ToDoItem>, pidResolver: IProjectIdResolver) =
     let cachedProjectId = None

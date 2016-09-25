@@ -6,7 +6,9 @@
         "compilerName": "fsc",
         "compile": {
             "includeFiles": [
-                "Storage.fs"
+                "Storage.fs",
+                "ToDoCommands.fs",
+                "ToDoQueries.fs"
 
             ]
         }
