@@ -4,6 +4,7 @@ open System
 
 type ToDoItemId = string
 
+[<CLIMutable>] // TODO Assuming this gets hydrated exernally, does it ?
 type ToDoItem = 
     {   Id: ToDoItemId
         Title: string

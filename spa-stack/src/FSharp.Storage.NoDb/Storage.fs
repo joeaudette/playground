@@ -13,13 +13,12 @@ open NoDb
 // this implementation is wired up from Startup.cs in the main web app services.AddNoDbStorageForToDoItems();
 // allowing a different implementation to be plugged in if needed ie for multi tenant or per user storage isolation
 
-
 type IProjectIdResolver = 
-    abstract member GetProjectId : Async<string>
+    abstract member GetProjectId : unit -> Async<string>
 
 type DefaultProjectIdResolver() =
     interface IProjectIdResolver with
-        member this.GetProjectId = async {
+        member this.GetProjectId () = async {
             return "default"
         }
 
