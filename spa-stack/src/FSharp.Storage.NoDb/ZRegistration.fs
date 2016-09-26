@@ -1,6 +1,4 @@
 ﻿namespace Microsoft.Extensions.DependencyInjection
-//namespace FSharp.Storage.NoDb
-//namespace Microsoft.Extensions.DependencyInjection
 
 open System.Runtime.CompilerServices
 open Microsoft.Extensions.DependencyInjection
@@ -14,20 +12,8 @@ type StartupExtensionsFSharp  =
     [<Extension>]
     static member AddNoDbStorageForToDoItemsFSharp(services: IServiceCollection) =
         services.AddNoDb<ToDoItem>() |> ignore
-        services.TryAddScoped<IProjectIdResolver, DefaultProjectIdResolver>() |> ignore
-        services.TryAddScoped<IToDoQueries, ToDoQueries>() |> ignore
-        services.TryAddScoped<IToDoCommands, ToDoCommands>() |> ignore
+        services.TryAddScoped<IProjectIdResolver, DefaultProjectIdResolver>() 
+        services.TryAddScoped<IToDoQueries, ToDoQueries>() 
+        services.TryAddScoped<IToDoCommands, ToDoCommands>() 
         services
 
-//[<AutoOpen>]
-//module StartupExtensionsFS =
-//
-//    [<Extension>]
-//    type IServiceCollection  with
-//        [<Extension>]
-//        static member AddNoDbStorageForToDoItemsFSharp(services: IServiceCollection) =
-//            services.AddNoDb<ToDoItem>() |> ignore
-//            services.TryAddScoped<IProjectIdResolver, DefaultProjectIdResolver>() |> ignore
-//            services.TryAddScoped<IToDoQueries, ToDoQueries>() |> ignore
-//            services.TryAddScoped<IToDoCommands, ToDoCommands>() |> ignore
-//            services

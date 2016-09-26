@@ -4,7 +4,6 @@ open System
 open Microsoft.AspNetCore.Mvc
 open Microsoft.AspNetCore.Routing
 open Microsoft.AspNetCore.JsonPatch
-
 open FSharp.Models
 
 type PatchedToDoModel = { Original: ToDoItem; Patched: ToDoItem }
@@ -31,13 +30,14 @@ type FSToDoController(commands: IToDoCommands, queries: IToDoQueries) =
             | None -> return this.NotFound() :> _
             | Some data -> return ObjectResult(data) :> _ } 
 
+    // RB: TOCONSIDER client should supply id so HTTP request can be idempotently retried
+    // JA: NOTES: http://restcookbook.com/HTTP%20Methods/put-vs-post/
     // create
     [<HttpPost>]
     member this.Post([<FromBody>] item:ToDoItem) =
         ActionResult.ofAsync <| async {
             if not this.ModelState.IsValid then return this.BadRequest() :> _
-            else
-                // TOCONSIDER client should supply id so HTTP request can be idempotently retried
+            else  
                 let item = { item with Id = Guid.NewGuid() |> string }
                 do! commands.Add item
                 let rv = RouteValueDictionary()

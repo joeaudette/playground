@@ -5,7 +5,6 @@
         "compilerName": "fsc",
         "compile": {
             "includeFiles": [
-                "Interop.fs",
                 "Controllers.fs"
             ]
         }

@@ -9,9 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
-//using NoDb;
-//using FSharp.Storage.NoDb;
-//using Microsoft.Extensions.DependencyInjection.Extensions;
+
 
 namespace WebApp
 {
@@ -33,7 +31,6 @@ namespace WebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddNoDbStorageForToDoItems();
-            //FSharp.Storage.NoDb.StartupExtensionsFSharp.AddNoDbStorageForToDoItemsFSharp(services);
             services.AddNoDbStorageForToDoItemsFSharp();
 
             services.Configure<MvcOptions>(options =>

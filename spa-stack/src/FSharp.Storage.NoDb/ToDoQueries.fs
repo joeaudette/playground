@@ -11,7 +11,10 @@ module Option =
 type ToDoQueries(queries: IBasicQueries<ToDoItem>, pidResolver: IProjectIdResolver) =
     let mutable cachedProjectId = None
 
-    // Equivalent to C# but room for tidying (though I'd actually push this out of this tpye and force the id to be passed in
+    // RB: Equivalent to C# but room for tidying (though I'd actually push this out of this tpye and force the id to be passed in
+    // JA: the IProjectIdResolver is passed in by DI, a default implementation is provided
+    // the only purpose of projectid is to configure the project folder name for NoDb storage
+    // a custom implementation would be needed for things like multi-tenancy or per user data sotrage location
     let getProjectId() = async {
         match cachedProjectId with
         | Some pid -> return pid

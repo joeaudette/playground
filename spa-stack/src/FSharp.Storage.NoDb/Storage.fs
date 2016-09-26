@@ -1,11 +1,6 @@
 namespace FSharp.Storage.NoDb
 
-open System
-open System.Collections.Generic
-open System.Threading
-open System.Threading.Tasks
 open FSharp.Models
-open NoDb
 
 // projectid is a NoDb implementation detail, the projectid is used as a folder name to group sub folders where serialized types are stored on disk
 // here we are just defining a hard coded one named "default", so files will go under
