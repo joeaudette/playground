@@ -4,9 +4,9 @@ This is just a little proof of concept to help me learn F# and [polymer js](http
 
 ## Points of Interest Demonstrated in the back end for this Project
 
-** F# and C# code with equivalent functionality. ASP.NET Core Web API, models, and data access, working examples of a To Do list back end in both languages providing a nice commparison for C# developers to see both a C# and an F# implementation.
+** F# and C# code with equivalent functionality. ASP.NET Core Web API, models, and data access, working examples of a To Do list back end in both languages providing a nice comparison for C# developers to see both a C# and an F# implementation.
 
-** F# and C# interoperability - the main web app is C# but mainly serves as a compostion root, with both C# and F# class libraries providing the actual functionality. Also of course the entire .NET ecosytem of components available as NuGets can be consumed and used from F# just as easily as from C#.
+** F# and C# interoperability - the main web app is C# but mainly serves as a composition root, with both C# and F# class libraries providing the actual functionality. Also of course the entire .NET ecosytem of components available as NuGets can be consumed and used from F# just as easily as from C#.
 
 ** I chose C# for the main web app and am putting the F# code into class libraries, because there is no F# support for Razor. So it is better to use C# for the main app in case you want to also use MVC with Razor Views. At the moment I'm only using api controllers and html but I'm cosidering adding some MVC parts later to illustrate a hybrid approach to building websites with parts of a site implemented with MVC but linking to SPA style "apps" hosted together. I tend to think that content centric sites are better implemented with MVC whereas web "apps" are better with a SPA approach. I don't like it when the "content" of a site cannot be read at all unless javascript is enabled. When I do research on the web I protect myself with the uMatix plugin for FireFox which blocks scripts and other things unless you specifically enable it for a domain. So I tend to land on new sites with javascript disabled and it annoys me if I have to enable it to read content. I digress, but that is why I like server side MVC better for content. Of course I don't mind enabling javascript if I want to use an "app".
 
