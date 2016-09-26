@@ -30,7 +30,7 @@ It is currently possible to develop in F# for ASP.NET Core but there are some pa
         }
     }
 	
-** When you make a change in the code of the class library projects, you have to rebuild the whole solution before you see the changes in reflected in the application UI, changes in the class library are not automatically noticed in the main web app.
+** When you make a change in the code of the class library projects, you have to rebuild the whole solution before you see the changes in reflected in the application UI, changes in the class library are not automatically noticed in the main web app. Actually I think it does automatically notice changes in the C# class library projects, just not the F# projects, so again probably a temporary tooling issue.
 
 ## Points of Interest Demonstrated in the Front end for this Project
 
