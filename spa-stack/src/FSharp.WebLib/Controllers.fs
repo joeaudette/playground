@@ -36,7 +36,8 @@ type FSToDoController(commands: IToDoCommands, queries: IToDoQueries) =
     [<HttpPost>]
     member this.Post([<FromBody>] item:ToDoItem) =
         ActionResult.ofAsync <| async {
-            if not this.ModelState.IsValid then return this.BadRequest() :> _
+            if not this.ModelState.IsValid then
+                return this.BadRequest() :> _
             else  
                 let item = { item with Id = Guid.NewGuid() |> string }
                 do! commands.Add item
@@ -44,7 +45,6 @@ type FSToDoController(commands: IToDoCommands, queries: IToDoQueries) =
                 rv.Add("id",item.Id)
                 return this.CreatedAtRoute("GetFsToDo", rv, item) :> _ } 
 
-    //update
     [<HttpPut("{id}")>]
     member this.Put(id:String, [<FromBody>] item:ToDoItem) =
         ActionResult.ofAsync <| async {

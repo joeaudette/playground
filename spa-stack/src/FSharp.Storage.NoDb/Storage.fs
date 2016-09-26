@@ -1,7 +1,5 @@
 namespace FSharp.Storage.NoDb
 
-open FSharp.Models
-
 // projectid is a NoDb implementation detail, the projectid is used as a folder name to group sub folders where serialized types are stored on disk
 // here we are just defining a hard coded one named "default", so files will go under
 // nodb_storage/projects/default/[type]/key.json
@@ -14,7 +12,4 @@ type IProjectIdResolver =
 type DefaultProjectIdResolver() =
     interface IProjectIdResolver with
         member this.GetProjectId () = async {
-            return "default"
-        }
-
-
+            return "default" }
