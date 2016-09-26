@@ -1,6 +1,7 @@
 # https://help.github.com/articles/dealing-with-line-endings/
 # http://stackoverflow.com/questions/170961/whats-the-best-crlf-carriage-return-line-feed-handling-strategy-with-git
 # https://github.com/alexkaratarakis/gitattributes
+# http://stackoverflow.com/questions/729692/why-should-text-files-end-with-a-newline
 # Set the default behavior, in case people don't have core.autocrlf set.
 *        text=auto
 
