@@ -1,0 +1,26 @@
+# https://help.github.com/articles/dealing-with-line-endings/
+# http://stackoverflow.com/questions/170961/whats-the-best-crlf-carriage-return-line-feed-handling-strategy-with-git
+# https://github.com/alexkaratarakis/gitattributes
+# Set the default behavior, in case people don't have core.autocrlf set.
+*        text=auto
+
+*.cs     text diff=csharp
+# *.fs     text diff=fsharp
+*.fs    text
+*.java   text diff=java
+*.html   text diff=html
+*.css    text
+*.js     text
+*.sql    text
+
+*.csproj text merge=union
+*.sln    text merge=union eol=crlf
+
+*.docx   diff=astextplain
+*.DOCX   diff=astextplain
+
+# absolute paths are ok, as are globs
+/**/postinst* text eol=lf
+
+# paths that don't start with / are treated relative to the .gitattributes folder
+relative/path/*.txt text eol=lf
