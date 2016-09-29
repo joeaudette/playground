@@ -6,8 +6,6 @@ open Microsoft.AspNetCore.Routing
 open Microsoft.AspNetCore.JsonPatch
 open FSharp.Models
 
-type PatchedToDoModel = { Original: ToDoItem; Patched: ToDoItem }
-
 module ActionResult =
     let ofAsync (res: Async<IActionResult>) =
         res |> Async.StartAsTask
@@ -72,12 +70,12 @@ type FSToDoController(commands: IToDoCommands, queries: IToDoQueries) =
                 | None -> return this.NotFound() :> _
                 | Some item ->
                     let patched = item
-                    patch.ApplyTo(patched, this.ModelState) // NB ApplyTo mutates the ModelState
+                    patch.ApplyTo(patched, this.ModelState) 
                     if not this.ModelState.IsValid then
                         return BadRequestObjectResult(this.ModelState) :> _
                     else
-                        let model = { Original = item; Patched = patched }
-                        return this.Ok(model) :> _ }
+                        do! commands.Update patched
+                        return NoContentResult() :> _ }
  
     [<HttpDelete("{id}")>]
     member this.Delete(id: string) =
