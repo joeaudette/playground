@@ -101,14 +101,8 @@ namespace CSharp.WebLib.Controllers
 
             await commands.Update(patched);
 
-            var model = new
-            {
-                original = todo,
-                patched = patched
-            };
+            return new NoContentResult();
 
-            return Ok(model);
-            
         }
 
         [HttpDelete("{id}")]
