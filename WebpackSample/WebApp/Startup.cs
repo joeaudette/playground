@@ -17,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.SpaServices.Webpack;
 
 namespace WebApp
 {
@@ -189,6 +190,12 @@ namespace WebApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
+                {
+                    HotModuleReplacement = true
+                    //,ReactHotModuleReplacement = true
+                });
+
                 app.UseBrowserLink();
                 app.UseDatabaseErrorPage();
             }
