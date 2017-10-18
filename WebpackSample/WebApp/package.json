@@ -20,7 +20,31 @@
     "webpack": "^3.6.0",
     "webpack-merge": "^4.1.0",
     "webpack-hot-middleware": "^2.19.1",
-    "webpack-dev-server": "2.8.2"
+    "webpack-dev-server": "2.8.2",
+
+
+
+    "@types/history": "4.6.0",
+    "@types/react": "15.0.35",
+    "@types/react-dom": "15.5.1",
+    "@types/react-hot-loader": "3.0.3",
+    "@types/react-router": "4.0.12",
+    "@types/react-router-dom": "4.0.5",
+    "aspnet-webpack-react": "^3.0.0",
+    "awesome-typescript-loader": "3.2.1",
+    "bootstrap": "3.3.7",
+    "isomorphic-fetch": "2.2.1",
+    "jquery": "3.2.1",
+    "json-loader": "0.5.4",
+    "react": "15.6.1",
+    "react-dom": "15.6.1",
+    "react-hot-loader": "3.0.0-beta.7",
+    "react-router-dom": "4.1.1",
+    "url-loader": "0.5.9"
+   
+
+
+
   },
   
   "scripts": {

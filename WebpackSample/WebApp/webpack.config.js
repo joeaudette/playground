@@ -2,8 +2,12 @@
 const webpack = require("webpack");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
+const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin;
+
+
 const config = {
     entry: {
+        'app-react': './app-react/boot.tsx',
         'clientapp1': ['./ClientApp1/Main.ts'],
         'mainstyle': './scss/style.scss'
     },
@@ -33,6 +37,11 @@ const config = {
             },
             {
                 test: /\.tsx?$/,
+                include: /ClientApp/,
+                use: 'awesome-typescript-loader?silent=true'
+            },
+            {
+                test: /\.tsx?$/,
                 loader: 'ts-loader',
                 exclude: /node_modules/,
             },
@@ -40,7 +49,7 @@ const config = {
     },
     resolve: {
         modules: [path.join(__dirname,"./node_modules/")],
-        //extensions: [".tsx", ".ts", ".js", ".scss"]
+        extensions: [".tsx", ".ts", ".js", ".scss"]
     },
     devtool: 'source-map',
     plugins: [
