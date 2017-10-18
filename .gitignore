@@ -254,7 +254,7 @@ paket-files/
 **/bower_components/**
 spa-stack/src/WebApp/nodb_storage/**
 **/userlocation/**
-
+**/logitem/**
 WebpackSample/WebApp/wwwroot/dist/**
 WebpackSample/WebApp/wwwroot/js/site.min.js
 WebpackSample/WebApp/wwwroot/css/site.min.css
