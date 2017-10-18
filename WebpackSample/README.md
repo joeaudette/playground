@@ -3,7 +3,7 @@
 This sample has cloudscribe Core and Simple Content using NoDb with pre-configured data.
 You can login with admin@admin.com password is admin
 
-This sample has webpack setup with typescript and with bootstrap-sass and it has webpack hot modukle reloading.
+This sample has webpack setup with typescript and with bootstrap-sass and it has webpack hot module reloading.
 
 For example you can edit the sass such as the _variables.scss file in the scss folder with the site runnning and just refresh the page to see your changes.
 
