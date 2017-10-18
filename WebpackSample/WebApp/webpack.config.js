@@ -2,13 +2,6 @@
 const webpack = require("webpack");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
-
-function resolve(filePath) {
-    return path.join(__dirname, filePath)
-}
-
-
-
 const config = {
     entry: {
         'clientapp1': ['./ClientApp1/Main.ts'],
@@ -46,7 +39,7 @@ const config = {
         ]
     },
     resolve: {
-        modules: [resolve("./node_modules/")],
+        modules: [path.join(__dirname,"./node_modules/")],
         //extensions: [".tsx", ".ts", ".js", ".scss"]
     },
     devtool: 'source-map',
