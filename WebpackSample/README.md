@@ -5,18 +5,18 @@ You can login with admin@admin.com password is admin
 
 This sample has webpack setup with typescript and with bootstrap-sass and it has webpack hot module reloading.
 
-For example you can edit the sass such as the _variables.scss file in the scss folder with the site runnning and just refresh the page to see your changes.
+For example you can edit the sass such as changing colors in the _variables.scss file in the scss folder with the site runnning and just refresh the page to see your changes.
 
 You can also edit the CleintApp1/Main.ts file which has a simple greeter, you can change the greeting and refresh the page and it appears immediately.
 
 ## Vanilla Typescript app sample
 
-The typescript client app is hosted in a simplecontent page and is already in the menu.
+There is a bassic hellow world vanilla typescript client app. It is hosted in a simplecontent page and is already in the menu.
 
 
 ## React/Redux/Typescript sample
 
-There is also a react app also hosted in a simplecontent page, already in the menu when you run the app.
+There is also a react/redux/typescript app also hosted in a simplecontent page, already in the menu when you run the app.
 
 ## Fable Sample
 
