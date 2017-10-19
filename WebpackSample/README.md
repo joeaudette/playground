@@ -30,7 +30,7 @@ If you want to try it uncommenting it, you first need to do a couple of things.
 
     `./.paket/paket.exe install` then: `dotnet restore --no-cache`
 	
-2 cd into the FableApp fodler and then run the command:
+2 cd into the FableApp folder and then run the command:
 
     `dotnet fable start`
 	
@@ -47,3 +47,5 @@ If you have been wanting to learn F#, using it for client side development prese
 
 I also forsee that web assembly is going to change the web development world in the near future. I expect that we will see whole new toolchains that allow us to write client side code in C# and F# and the code will compile to web assembly instead of javascript.
 When that happens, existing javascript code will begin to be considered legacy code and I think most people will move away from using the javascript language for web development. So my thinking is that if I can start writing client side code in F# today, then perhaps much of that code will still be useful later when I can compile it to webassmble instead of compiling it to javascript with Fable.
+
+Note that paket is a package manager used widely in the F# community.
