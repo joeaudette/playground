@@ -7,7 +7,8 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 const config = {
     entry: {
-        'app-react': './app-react/boot.tsx',
+        'app-react': './app-react/boot-client.tsx',
+        'app-react-server': './app-react/boot-server.tsx',
         'clientapp1': ['./ClientApp1/Main.ts'],
         'mainstyle': './scss/style.scss'
     },
