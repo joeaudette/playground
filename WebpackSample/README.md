@@ -3,6 +3,8 @@
 This sample has cloudscribe Core and Simple Content using NoDb with pre-configured data.
 You can login with admin@admin.com password is admin
 
+There are a couple of great things about this sample. It shows how to use webpack for client development, with hot module reloading, and using the sass version of bootstrap which is great for doing custom bootstrap themes. You can more easily customize the colors, and you can leave out parts of bootstrap that you are not using to reduce the amount of css. I pretty much do all my client proejcts with bootstrap-sass. Best of all, I think this sample shows how you can easily integrate SPA (Single Page App) style apps into a larger MVC web site. When you need to have multiple apps all tied together in one web property this provides a great approach. SPA style apps usually have just a little markup for an app element like and empty div, and the some javascript that loads the app into the app element. In SimpleContent you can disable the CKeditor, which makes it easier to put in your app markup because CKeditor doesn't let you put in an empty div. Then the developer tools for SimpleContent pages allow you to add any needed scripts and css. There are already several sample SPA apps setup that you can see just by running the WebApp.
+
 This sample has webpack setup with typescript and with bootstrap-sass and it has webpack hot module reloading.
 
 For example you can edit the sass such as changing colors in the _variables.scss file in the scss folder with the site runnning and just refresh the page to see your changes.
