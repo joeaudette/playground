@@ -2,7 +2,7 @@
 const webpack = require("webpack");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
-const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin;
+//const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin;
 
 
 const config = {
@@ -35,11 +35,11 @@ const config = {
                 
                 
             },
-            {
-                test: /\.tsx?$/,
-                include: /ClientApp/,
-                use: 'awesome-typescript-loader?silent=true'
-            },
+            //{
+            //    test: /\.tsx?$/,
+            //    include: /ClientApp/,
+            //    use: 'awesome-typescript-loader?silent=true'
+            //},
             {
                 test: /\.tsx?$/,
                 loader: 'ts-loader',
