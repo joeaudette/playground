@@ -3,10 +3,17 @@ const webpack = require("webpack");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 //const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin;
+const fableUtils = require("fable-utils");
+var babelOptions = fableUtils.resolveBabelOptions({
+    presets: [["es2015", { "modules": false }]],
+    plugins: ["transform-runtime"]
+});
+const isProduction = false;
 
 
 const config = {
     entry: {
+        //'fable-app': '../FableApp/FableApp.fsproj',
         'app-react': './app-react/boot-client.tsx',
         'app-react-server': './app-react/boot-server.tsx',
         'clientapp1': ['./ClientApp1/Main.ts'],
@@ -19,6 +26,16 @@ const config = {
     },
     module: {
         rules: [
+            {
+                test: /\.fs(x|proj)?$/,
+                use: {
+                    loader: "fable-loader",
+                    options: {
+                        babel: babelOptions,
+                        define: isProduction ? [] : ["DEBUG"]
+                    }
+                }
+            },
             {
                 test: /\.css$/,
                 use: ExtractTextPlugin.extract({
