@@ -38,14 +38,14 @@ now you can uncomment the line in webpack.config.js for the entry: 'fable-app': 
 
 ### Why Fable 
 
-As you may know the javascript world is a bit of a wild wild west, javaqscript the language has good parts and bad parts and it requires a lot of knowledge to avoid the bad parts. Typescript is a language that aims to improve javascript but it doesn't eliminate the bad parts of javascript.
+As you may know the javascript world is a bit of a wild wild west, javascript the language has good parts and bad parts and it requires a lot of knowledge to avoid the bad parts. Typescript is a language that aims to improve javascript but it doesn't eliminate the bad parts of javascript.
 
-F# on the other hand is a great functional first language with no bad parts so it offers an opportunity to completely avoid writing client side code in javascript. 
+F# on the other hand is a great functional first language with no bad parts so it offers an opportunity to completely avoid writing client side code in javascript.
 Your F# code will get compiled into javascript but you can write in F#.
 
-If you have been wanting to learn F#, using it for client side development presents and opportunity to ease into it without going all in on full stack F#.
+If you have been wanting to learn F#, using it for client side development presents an opportunity to ease into it without going all in on full stack F#.
 
-I also forsee that web assembly is going to change the web development world in the near future. I expect that we will see whole new toolchains that allow us to write client side code in C# and F# and the code will compile to web assembly instead of javascript.
+I also forsee that web assembly is going to change the web development world in the near future. I expect that we will see whole new tool chains that allow us to write client side code in C# and F# and the code will compile to web assembly instead of javascript.
 When that happens, existing javascript code will begin to be considered legacy code and I think most people will move away from using the javascript language for web development. So my thinking is that if I can start writing client side code in F# today, then perhaps much of that code will still be useful later when I can compile it to webassmble instead of compiling it to javascript with Fable.
 
 Note that paket is a package manager used widely in the F# community.
