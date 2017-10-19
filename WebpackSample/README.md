@@ -28,11 +28,11 @@ If you want to try it uncommenting it, you first need to do a couple of things.
 
 1 open a command window in the root of the solution and run the command:
 
-    `./.paket/paket.exe install` then: `dotnet restore --no-cache`
+    ./.paket/paket.exe install then: dotnet restore --no-cache
 	
 2 cd into the FableApp folder and then run the command:
 
-    `dotnet fable start`
+    dotnet fable start
 	
 now you can uncomment the line in webpack.config.js for the entry: 'fable-app': '../FableApp/FableApp.fsproj',
 
