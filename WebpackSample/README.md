@@ -7,7 +7,7 @@ This sample has webpack setup with typescript and with bootstrap-sass and it has
 
 For example you can edit the sass such as changing colors in the _variables.scss file in the scss folder with the site runnning and just refresh the page to see your changes.
 
-You can also edit the CleintApp1/Main.ts file which has a simple greeter, you can change the greeting and refresh the page and it appears immediately.
+You can also edit the CleintApp1/Main.ts file which has a simple greeter, you can change the greeting and refresh the page and it appears immediately due to the hot module reloading. Similarly you can edit any of the typescript code in the react sample and refresh the page to see the changes immediately. Webpack hot module reloading rocks!
 
 ## Vanilla Typescript app sample
 
