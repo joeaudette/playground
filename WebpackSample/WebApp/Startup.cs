@@ -193,7 +193,7 @@ namespace WebApp
                 app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
                 {
                     HotModuleReplacement = true
-                    //,ReactHotModuleReplacement = true
+                    ,ReactHotModuleReplacement = true
                 });
 
                 app.UseBrowserLink();
