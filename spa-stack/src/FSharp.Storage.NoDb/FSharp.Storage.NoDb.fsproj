@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+   <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Storage.fs" />
+	<Compile Include="ToDoCommands.fs" />
+	<Compile Include="ToDoQueries.fs" />
+    <Compile Include="ZRegistration.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FSharp.Models\FSharp.Models.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NoDb" Version="1.0.*" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.*" />
+  </ItemGroup>
+  
+
+</Project>

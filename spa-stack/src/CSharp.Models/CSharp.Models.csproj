@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>CSharp.Models</AssemblyName>
+    <PackageId>CSharp.Models</PackageId>
+  </PropertyGroup>
+
+  
+</Project>
