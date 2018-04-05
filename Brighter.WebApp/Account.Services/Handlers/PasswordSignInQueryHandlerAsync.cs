@@ -10,10 +10,11 @@ using Paramore.Darker.Attributes;
 using Microsoft.AspNetCore.Identity;
 using Paramore.Brighter;
 using Paramore.Brighter.Logging.Attributes;
+using Account.Models;
 
 namespace Account.Services.Handlers
 {
-    public class PasswordSignInQueryHandlerAsync : QueryHandlerAsync<PasswordSignInQuery, PasswordSignInQuery.Result>
+    public class PasswordSignInQueryHandlerAsync : QueryHandlerAsync<PasswordSignInQuery, AuthenticationResult>
     {
         public PasswordSignInQueryHandlerAsync(
             SignInManager<ApplicationUser> signInManager
@@ -26,10 +27,10 @@ namespace Account.Services.Handlers
 
         [RequestLoggingAsync(step: 1, timing: HandlerTiming.Before)]
         //[RetryableQuery(2)]
-        public override async Task<PasswordSignInQuery.Result> ExecuteAsync(PasswordSignInQuery request, CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<AuthenticationResult> ExecuteAsync(PasswordSignInQuery request, CancellationToken cancellationToken = default(CancellationToken))
         {
             var identityResult = await _signInManager.PasswordSignInAsync(request.Email, request.Password, request.RememberMe, lockoutOnFailure: false);
-            return new PasswordSignInQuery.Result(identityResult.Succeeded, identityResult.IsLockedOut, identityResult.IsNotAllowed, identityResult.RequiresTwoFactor);
+            return new AuthenticationResult(identityResult.Succeeded, identityResult.IsLockedOut, identityResult.IsNotAllowed, identityResult.RequiresTwoFactor);
 
         }
 

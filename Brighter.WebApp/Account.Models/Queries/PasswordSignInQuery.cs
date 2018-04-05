@@ -2,7 +2,7 @@
 
 namespace Account.Models.Queries
 {
-    public class PasswordSignInQuery : IQuery<PasswordSignInQuery.Result>
+    public class PasswordSignInQuery : IQuery<AuthenticationResult>
     {
         public string Email { get; }
         public string Password { get; }
@@ -20,35 +20,35 @@ namespace Account.Models.Queries
            
         }
 
-        public sealed class Result //: IQueryResponse
-        {
-            public Result(bool succeeded, bool isLockedOut, bool isNotAllowed, bool requiresTwoFactor)
-            {
-                Succeeded = succeeded;
-                IsLockedOut = isLockedOut;
-                IsNotAllowed = isNotAllowed;
-                RequiresTwoFactor = requiresTwoFactor;
-            }
+        //public sealed class Result //: IQueryResponse
+        //{
+        //    public Result(bool succeeded, bool isLockedOut, bool isNotAllowed, bool requiresTwoFactor)
+        //    {
+        //        Succeeded = succeeded;
+        //        IsLockedOut = isLockedOut;
+        //        IsNotAllowed = isNotAllowed;
+        //        RequiresTwoFactor = requiresTwoFactor;
+        //    }
 
-            //
-            // Summary:
-            //     Returns a flag indication whether the sign-in was successful.
-            public bool Succeeded { get; }
-            //
-            // Summary:
-            //     Returns a flag indication whether the user attempting to sign-in is locked out.
-            public bool IsLockedOut { get; }
-            //
-            // Summary:
-            //     Returns a flag indication whether the user attempting to sign-in is not allowed
-            //     to sign-in.
-            public bool IsNotAllowed { get; }
-            //
-            // Summary:
-            //     Returns a flag indication whether the user attempting to sign-in requires two
-            //     factor authentication.
-            public bool RequiresTwoFactor { get; }
+        //    //
+        //    // Summary:
+        //    //     Returns a flag indication whether the sign-in was successful.
+        //    public bool Succeeded { get; }
+        //    //
+        //    // Summary:
+        //    //     Returns a flag indication whether the user attempting to sign-in is locked out.
+        //    public bool IsLockedOut { get; }
+        //    //
+        //    // Summary:
+        //    //     Returns a flag indication whether the user attempting to sign-in is not allowed
+        //    //     to sign-in.
+        //    public bool IsNotAllowed { get; }
+        //    //
+        //    // Summary:
+        //    //     Returns a flag indication whether the user attempting to sign-in requires two
+        //    //     factor authentication.
+        //    public bool RequiresTwoFactor { get; }
 
-        }
+        //}
     }
 }
