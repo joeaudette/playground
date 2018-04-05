@@ -13,8 +13,9 @@ using Microsoft.Extensions.Options;
 using Brighter.WebApp.Models;
 using Brighter.WebApp.Models.AccountViewModels;
 using Brighter.WebApp.Services;
-using Paramore.Darker;
-using Account.Models.Queries;
+//using Paramore.Darker;
+using Features.Account;
+using MediatR;
 
 namespace Brighter.WebApp.Controllers
 {
@@ -26,16 +27,19 @@ namespace Brighter.WebApp.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
-        private IQueryProcessor _queryProcessor;
+        //private IQueryProcessor _queryProcessor;
+        private IMediator _service;
 
         public AccountController(
-            IQueryProcessor queryProcessor,
+            IMediator mediator,
+            //IQueryProcessor queryProcessor,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             ILogger<AccountController> logger)
         {
-            _queryProcessor = queryProcessor;
+            _service = mediator;
+            //_queryProcessor = queryProcessor;
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
@@ -64,10 +68,10 @@ namespace Brighter.WebApp.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                
+
                 var query = new PasswordSignInQuery(model.Email, model.Password, model.RememberMe);
-                var result = await _queryProcessor.ExecuteAsync(query);
-                
+                var result = await _service.Send(query);
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
@@ -92,6 +96,44 @@ namespace Brighter.WebApp.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
+
+        //previous Darker implementation
+        //[HttpPost]
+        //[AllowAnonymous]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
+        //{
+        //    ViewData["ReturnUrl"] = returnUrl;
+        //    if (ModelState.IsValid)
+        //    {
+
+        //        var query = new PasswordSignInQuery(model.Email, model.Password, model.RememberMe);
+        //        var result = await _queryProcessor.ExecuteAsync(query);
+
+        //        if (result.Succeeded)
+        //        {
+        //            _logger.LogInformation("User logged in.");
+        //            return RedirectToLocal(returnUrl);
+        //        }
+        //        if (result.RequiresTwoFactor)
+        //        {
+        //            return RedirectToAction(nameof(LoginWith2fa), new { returnUrl, model.RememberMe });
+        //        }
+        //        if (result.IsLockedOut)
+        //        {
+        //            _logger.LogWarning("User account locked out.");
+        //            return RedirectToAction(nameof(Lockout));
+        //        }
+        //        else
+        //        {
+        //            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+        //            return View(model);
+        //        }
+        //    }
+
+        //    // If we got this far, something failed, redisplay form
+        //    return View(model);
+        //}
 
         // original implementation for reference
         //[HttpPost]
@@ -283,6 +325,36 @@ namespace Brighter.WebApp.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
+
+        //original implementation
+        //[HttpPost]
+        //[AllowAnonymous]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        //{
+        //    ViewData["ReturnUrl"] = returnUrl;
+        //    if (ModelState.IsValid)
+        //    {
+        //        var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+        //        var result = await _userManager.CreateAsync(user, model.Password);
+        //        if (result.Succeeded)
+        //        {
+        //            _logger.LogInformation("User created a new account with password.");
+
+        //            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        //            var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
+        //            await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
+
+        //            await _signInManager.SignInAsync(user, isPersistent: false);
+        //            _logger.LogInformation("User created a new account with password.");
+        //            return RedirectToLocal(returnUrl);
+        //        }
+        //        AddErrors(result);
+        //    }
+
+        //    // If we got this far, something failed, redisplay form
+        //    return View(model);
+        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]

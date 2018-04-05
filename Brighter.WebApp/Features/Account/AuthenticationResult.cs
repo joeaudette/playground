@@ -1,4 +1,4 @@
-﻿namespace Account.Models
+﻿namespace Features.Account
 {
     public sealed class AuthenticationResult 
     {

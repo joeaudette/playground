@@ -11,15 +11,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Brighter.WebApp.Data;
 using Brighter.WebApp.Models;
 using Brighter.WebApp.Services;
-using Paramore.Darker.AspNetCore;
+//using Paramore.Darker.AspNetCore;
 //using Paramore.Darker.Policies;
 //using Paramore.Darker.QueryLogging;
 
 using Polly;
-using Account.Models.Queries;
-using Account.Services.Handlers;
-using Account.Models;
-using Paramore.Brighter.AspNetCore;
+//using Account.Models.Queries;
+//using Account.Services.Handlers;
+//using Account.Models;
+using Features.Account;
+//using Paramore.Brighter.AspNetCore;
+using MediatR;
 
 namespace Brighter.WebApp
 {
@@ -44,27 +46,32 @@ namespace Brighter.WebApp
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddMediatR(
+                 typeof(PasswordSignInQuery).Assembly,
+                typeof(PasswordSignInQueryHandler).Assembly
+                );
+
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
-            services.AddBrighter().AsyncHandlersFromAssemblies(
-                typeof(PasswordSignInQuery).Assembly,
-                typeof(PasswordSignInQueryHandlerAsync).Assembly
-                )
-                ;
+            //services.AddBrighter().AsyncHandlersFromAssemblies(
+            //    typeof(PasswordSignInQuery).Assembly,
+            //    typeof(PasswordSignInQueryHandlerAsync).Assembly
+            //    )
+            //    ;
 
-            services.AddDarker()
-                //.AddHandlers(registry =>
-                //{
-                //    registry.Register(typeof(AuthenticateQuery), typeof(AuthenticateQuery.Result), typeof(AuthenticateQueryHandlerAsync));
-                //})
-                .AddHandlersFromAssemblies(
-                typeof(PasswordSignInQuery).Assembly,
-                typeof(PasswordSignInQueryHandlerAsync).Assembly
-                )
-                //.AddJsonQueryLogging()
-                //.AddPolicies(ConfigurePolicies())
-                ;
+            //services.AddDarker()
+            //    //.AddHandlers(registry =>
+            //    //{
+            //    //    registry.Register(typeof(AuthenticateQuery), typeof(AuthenticateQuery.Result), typeof(AuthenticateQueryHandlerAsync));
+            //    //})
+            //    .AddHandlersFromAssemblies(
+            //    typeof(PasswordSignInQuery).Assembly,
+            //    typeof(PasswordSignInQueryHandlerAsync).Assembly
+            //    )
+            //    //.AddJsonQueryLogging()
+            //    //.AddPolicies(ConfigurePolicies())
+            //    ;
            
 
             //services.AddSingleton<IQueryProcessor, QueryProcessor>();

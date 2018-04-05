@@ -10,12 +10,8 @@
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" PrivateAssets="All" />
-    <PackageReference Include="Paramore.Brighter" Version="7.1.5" />
-    <PackageReference Include="Paramore.Brighter.AspNetCore" Version="1.0.0-*" />
-    <PackageReference Include="Paramore.Darker" Version="1.1.0" />
-    <PackageReference Include="Paramore.Darker.AspNetCore" Version="1.1.2" />
-    <PackageReference Include="Paramore.Darker.Policies" Version="1.1.0" />
-    <PackageReference Include="Paramore.Darker.QueryLogging" Version="1.1.0" />
+    <PackageReference Include="MediatR" Version="4.1.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="4.1.0" />
 
   </ItemGroup>
 
@@ -26,8 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Account.Models\Account.Models.csproj" />
-    <ProjectReference Include="..\Account.Services\Account.Services.csproj" />
+    <ProjectReference Include="..\Features\Features.csproj" />
   </ItemGroup>
 
 </Project>
