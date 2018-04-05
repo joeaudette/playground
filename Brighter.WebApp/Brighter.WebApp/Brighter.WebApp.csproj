@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <UserSecretsId>aspnet-Brighter.WebApp-0E42BEC9-4C54-420A-9DF4-56C7A4250608</UserSecretsId>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" PrivateAssets="All" />
+    <PackageReference Include="Paramore.Brighter" Version="7.1.5" />
+    <PackageReference Include="Paramore.Brighter.AspNetCore" Version="1.0.0-*" />
+    <PackageReference Include="Paramore.Darker" Version="1.1.0" />
+    <PackageReference Include="Paramore.Darker.AspNetCore" Version="1.1.2" />
+    <PackageReference Include="Paramore.Darker.Policies" Version="1.1.0" />
+    <PackageReference Include="Paramore.Darker.QueryLogging" Version="1.1.0" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.2" />
+    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.1" />
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Account.Models\Account.Models.csproj" />
+    <ProjectReference Include="..\Account.Services\Account.Services.csproj" />
+  </ItemGroup>
+
+</Project>
